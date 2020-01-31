@@ -1,75 +1,76 @@
-var express =require('express');
-var router = express.Router();
-var bcrypt = require('bcryptjs');
-var passport = require('passport');
+// routes/users.js
 
+var express = require('express');
+var router = express.Router();
 var User = require('../models/User');
 
-router.get('/register' , (req,res) => {
-    res.render('user/register');
+// Index // 1
+router.get('/', function(req, res){
+  User.find({})
+    .sort({id:1})
+    .exec(function(err, users){
+      if(err) return res.json(err);
+      res.render('users/index', {users:users});
+    });
 });
 
-router.get('/login' , (req,res) => {
-    res.render('user/login');
+// New
+router.get('/new', function(req, res){
+  res.render('users/new');
 });
 
-router.post('/register' , (req,res) => {
-    const { name, phone , password, id} = req.body;
-    let errors=[];
+// create
+router.post('/', function(req, res){
+  User.create(req.body, function(err, user){
+    if(err) return res.json(err);
+    res.redirect('/users');
+  });
+});
 
-    if(!name || !phone || !id || !password ) {
-        errors.push({msg: '모든 항목을 채워 주세요'});
-    }
+// show
+router.get('/:id', function(req, res){
+  User.findOne({id:req.params.id}, function(err, user){
+    if(err) return res.json(err);
+    res.render('users/show', {user:user});
+  });
+});
 
-    if(password.length<6) {
-        errors.push({msg : '비밀번호는 6자 이상이어야 합니다.'});
-    }
+// edit
+router.get('/:id/edit', function(req, res){
+  User.findOne({id:req.params.id}, function(err, user){
+    if(err) return res.json(err);
+    res.render('users/edit', {user:user});
+  });
+});
 
-    if(errors.length>0) {
-        res.render('user/register', {
-            errors,
-            name,
-            phone,
-            password,
-            id
-        });
-    } else {
-        User.findOne({id:id})
-            .then(user => {
-                if(user) {
-                    errors.push({msg: '중복된 id가 존재합니다.'});
-                    res.render('user/register', {
-                        errors,
-                        name,
-                        phone,
-                        password,
-                        id
-                    });
-                } else {
-                    const newUser = new User ({
-                        name,
-                        phone,
-                        password,
-                        id
-                    });
+// update // 2
+router.put('/:id', function(req, res, next){
+  User.findOne({id:req.params.id}) // 2-1
+    .select('password') // 2-2
+    .exec(function(err, user){
+      if(err) return res.json(err);
 
-                    bcrypt.genSalt(10,(err,salt) => 
-                        bcrypt.hash(newUser.password,salt,(err,hash) => {
-                            if(err) throw err;
-                            newUser.password = hash;
+      // update user object
+      user.originalPassword = user.password;
+      user.password = req.body.newPassword? req.body.newPassword : user.password; // 2-3
+      for(var p in req.body){ // 2-4
+        user[p] = req.body[p];
+      }
 
-                            newUser.save()
-                                .then(user => {
-                                    req.flash('success_msg' , '회원가입이 완료 되었습니다. 로그인을 해주세요');
-                                    res.redirect('/');
-                                })
-                                .catch(err => console.log(err));
-                        }))
-                }
-            });
-    }
+      // save updated user
+      user.save(function(err, user){
+        if(err) return res.json(err);
+        res.redirect('/users/'+user.id);
+      });
+  });
+});
+
+// destroy
+router.delete('/:id', function(req, res){
+  User.deleteOne({id:req.params.id}, function(err){
+    if(err) return res.json(err);
+    res.redirect('/users');
+  });
 });
 
 module.exports = router;
-
-

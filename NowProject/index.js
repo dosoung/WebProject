@@ -19,7 +19,7 @@ mongoose.connect(db,{useNewUrlParser:true})
 
 //Express Session
 app.use(session({
-    secret: 'secret',
+    secret: 'Mysecret',
     resave: true,
     saveUninitialized: true
   }));
