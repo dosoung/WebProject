@@ -19,11 +19,7 @@ mongoose.connect(db,{useNewUrlParser:true})
 .catch(err => console.log(err));
 
 //Express Session
-app.use(session({
-    secret: 'Mysecret',
-    resave: true,
-    saveUninitialized: true
-  }));
+
 
 
 //Other setting
@@ -33,6 +29,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(methodOverride('_method'));
 app.use(flash());
+app.use(session({secret: 'Mysecret',resave: true,saveUninitialized: true}));
 
 //Passport
 app.use(passport.initialize());  //Passport를 초기화

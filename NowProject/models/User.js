@@ -5,10 +5,14 @@ const userSchema = new mongoose.Schema({
     name: {
         type:String, 
         required:[true , '이름이 필요합니다.'],
+        match:[/^.{3,5}$/,'이름은 3글자에서 5글자 사이어야 합니다.'],
+        trim:true
     },
     phone: {
         type: String, 
-        required:true
+        required:true,
+        match:[/^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/,'유효한 휴대전화 형식이 아닙니다.'],
+        trim: true
     },
     id: {
         type: String, 
@@ -49,14 +53,16 @@ var passwordRegexErrorMessage = '비밀번호는 최소 8자 이상이고 숫자
 userSchema.path('password').validate(function(v) {
   var user = this; // 3-1
 
-
   // create user // 3-3
   if(user.isNew){ // 3-2
     if(!user.passwordConfirmation){
       user.invalidate('passwordConfirmation', 'Password Confirmation is required.');
     }
 
-    if(user.password !== user.passwordConfirmation) {
+    if(!passwordRegex.test(user.password)) {
+      user.invalidate('password', passwordRegexErrorMessage);
+    }
+    else if(user.password !== user.passwordConfirmation) {
       user.invalidate('passwordConfirmation', 'Password Confirmation does not matched!');
     }
   }
@@ -66,14 +72,14 @@ userSchema.path('password').validate(function(v) {
     if(!user.currentPassword){
       user.invalidate('currentPassword', 'Current Password is required!');
     }
-    else if(!bcrypt.compareSync(user.currentPassword, user.originalPassword)){ // 2
-        user.invalidate('currentPassword', 'Current Password is invalid!');
-    }
-    else if(user.currentPassword != user.originalPassword){
+    else if(!bcrypt.compareSync(user.currentPassword, user.originalPassword)){
       user.invalidate('currentPassword', 'Current Password is invalid!');
     }
 
-    if(user.newPassword !== user.passwordConfirmation) {
+    if(user.newPassword && !passwordRegex.test(user.newPassword)){ // 2-3
+      user.invalidate("newPassword", passwordRegexErrorMessage); // 2-4
+    }
+    else if(user.newPassword !== user.passwordConfirmation) {
       user.invalidate('passwordConfirmation', 'Password Confirmation does not matched!');
     }
   }

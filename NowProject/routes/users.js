@@ -16,13 +16,19 @@ router.get('/', function(req, res){
 
 // New
 router.get('/new', function(req, res){
-  res.render('users/new');
+  var user = req.flash('user')[0] || {};
+  var errors = req.flash('errors')[0] || {};
+  res.render('users/new', {user:user,errors:errors});
 });
 
 // create
 router.post('/', function(req, res){
   User.create(req.body, function(err, user){
-    if(err) return res.json(err);
+    if(err) {
+      req.flash('user',req.body);
+      req.flash('errors',parseError(err));
+      return res.redirect('/users/new');
+    }
     res.redirect('/users');
   });
 });
@@ -37,10 +43,17 @@ router.get('/:id', function(req, res){
 
 // edit
 router.get('/:id/edit', function(req, res){
-  User.findOne({id:req.params.id}, function(err, user){
-    if(err) return res.json(err);
-    res.render('users/edit', {user:user});
-  });
+  var user = req.flash('user')[0];
+  var errors = req.flash('errors')[0] || {};
+  if(!user) {
+    User.findOne({id:req.params.id}, function(err,user) {
+      if(err) return res.json(err);
+      res.render('users/edit', {id:req.params.id,user:user,errors:errors});
+    });
+  }
+  else {
+    res.render('users/edit',{id:req.params.id,user:user,errors:errors});
+  }
 });
 
 // update // 2
@@ -59,10 +72,14 @@ router.put('/:id', function(req, res, next){
 
       // save updated user
       user.save(function(err, user){
-        if(err) return res.json(err);
-        res.redirect('/users/'+user.id);
-      });
+        if(err) {
+          req.flash('user',req.body);
+          req.flash('errors',parseError(err));
+          return res.redirect('/users/'+req.params.id+'/edit');
+      }
+      res.redirect('/users/'+user.id);
   });
+});
 });
 
 // destroy
@@ -74,3 +91,21 @@ router.delete('/:id', function(req, res){
 });
 
 module.exports = router;
+
+// functions
+function parseError(errors){
+  var parsed = {};
+  if(errors.name == 'ValidationError'){
+    for(var name in errors.errors){
+      var validationError = errors.errors[name];
+      parsed[name] = { message:validationError.message };
+    }
+  }
+  else if(errors.code == '11000' && errors.errmsg.indexOf('id') > 0) {
+    parsed.username = { message:'This id already exists!' };
+  }
+  else {
+    parsed.unhandled = JSON.stringify(errors);
+  }
+  return parsed;
+}
