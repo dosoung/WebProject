@@ -3,16 +3,8 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/User');
+var util = require('../util');
 
-// Index // 1
-router.get('/', function(req, res){
-  User.find({})
-    .sort({id:1})
-    .exec(function(err, users){
-      if(err) return res.json(err);
-      res.render('users/index', {users:users});
-    });
-});
 
 // New
 router.get('/new', function(req, res){
@@ -26,15 +18,15 @@ router.post('/', function(req, res){
   User.create(req.body, function(err, user){
     if(err) {
       req.flash('user',req.body);
-      req.flash('errors',parseError(err));
+      req.flash('errors',util.parseError(err));
       return res.redirect('/users/new');
     }
-    res.redirect('/users');
+    res.redirect('/');
   });
 });
 
 // show
-router.get('/:id', function(req, res){
+router.get('/:id', util.isLoggedin, checkPermission, function(req, res){
   User.findOne({id:req.params.id}, function(err, user){
     if(err) return res.json(err);
     res.render('users/show', {user:user});
@@ -42,7 +34,7 @@ router.get('/:id', function(req, res){
 });
 
 // edit
-router.get('/:id/edit', function(req, res){
+router.get('/:id/edit', util.isLoggedin, checkPermission, function(req, res){
   var user = req.flash('user')[0];
   var errors = req.flash('errors')[0] || {};
   if(!user) {
@@ -57,7 +49,7 @@ router.get('/:id/edit', function(req, res){
 });
 
 // update // 2
-router.put('/:id', function(req, res, next){
+router.put('/:id', util.isLoggedin, checkPermission, function(req, res, next){
   User.findOne({id:req.params.id}) // 2-1
     .select('password') // 2-2
     .exec(function(err, user){
@@ -74,7 +66,7 @@ router.put('/:id', function(req, res, next){
       user.save(function(err, user){
         if(err) {
           req.flash('user',req.body);
-          req.flash('errors',parseError(err));
+          req.flash('errors',util.parseError(err));
           return res.redirect('/users/'+req.params.id+'/edit');
       }
       res.redirect('/users/'+user.id);
@@ -92,20 +84,12 @@ router.delete('/:id', function(req, res){
 
 module.exports = router;
 
-// functions
-function parseError(errors){
-  var parsed = {};
-  if(errors.name == 'ValidationError'){
-    for(var name in errors.errors){
-      var validationError = errors.errors[name];
-      parsed[name] = { message:validationError.message };
-    }
-  }
-  else if(errors.code == '11000' && errors.errmsg.indexOf('id') > 0) {
-    parsed.username = { message:'This id already exists!' };
-  }
-  else {
-    parsed.unhandled = JSON.stringify(errors);
-  }
-  return parsed;
+
+function checkPermission(req, res, next){
+  User.findOne({username:req.params.username}, function(err, user){
+    if(err) return res.json(err);
+    if(user.id != req.user.id) return util.noPermission(req, res);
+
+    next();
+  });
 }

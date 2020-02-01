@@ -42,8 +42,8 @@ app.use(function(req,res,next) {
 })
 //Routes
 app.use('/', require('./routes/home'));
-app.use('/posts' , require('./routes/posts'));
 app.use('/users', require('./routes/users'));
+app.use('/posts' , require('./routes/posts'));
 
 const PORT = process.env.PORT || 9000;
 app.listen(PORT, console.log(`Server connected on port ${PORT}`));

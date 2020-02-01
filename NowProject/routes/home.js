@@ -43,7 +43,7 @@ router.post('/login',(req,res,next) => {
     }
 },
 passport.authenticate('local-login', {
-    successRedirect:'/posts',
+    successRedirect:'/',
     failureRedirect: '/login'
 }
 ));

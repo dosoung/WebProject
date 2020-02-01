@@ -16,8 +16,8 @@
 
         <thead class="thead-light">
           <tr>
-            <th scope="col">Name</th>
             <th scope="col">Title</th>
+            <th scope="col">Author</th>
             <th scope="col" class="date">Date</th>
           </tr>
         </thead>
@@ -30,11 +30,11 @@
           <% } %>
           <% posts.forEach(function(post) { %>
             <tr>
-                <td>
-                    <%= post.name %>
-                </td>
               <td>
                 <a href="/posts/<%= post._id %>"><div class="ellipsis"><%= post.title %></div></a>
+              </td>
+              <td class="author">
+                <div class="ellipsis"><%= post.author ? post.author.id : "" %></div>
               </td>
               <td class="date">
                 <span data-date="<%= post.createdAt %>"></span> <!-- 1 -->
@@ -46,7 +46,9 @@
       </table>
 
       <div>
+        <% if(isAuthenticated) { %>
         <a class="btn btn-primary" href="/posts/new" style="background-color: orange; border-color:orange;">글쓰기</a>
+        <% } %>
       </div>
 
     </div>
