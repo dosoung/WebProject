@@ -22,22 +22,22 @@
       <form action="/posts/<%= post._id %>?_method=put" method="post">
 
         <div class ="form-group">
-            <label for ="name">Name</label>
+            <label for ="name">이름</label>
             <input type="text" id ="name" name="name" value="<%= post.name %>" class ="form-control">
         </div>
         <div class="form-group">
-          <label for="title">Title</label>
+          <label for="title">제목</label>
           <input type="text" id="title" name="title" value="<%= post.title %>" class="form-control">
         </div>
 
         <div class="form-group">
-          <label for="body">Body</label>
+          <label for="body">내용</label>
             <textarea id="body" name="body" rows="5" class="form-control"><%= post.body %></textarea>
         </div>
 
         <div>
-          <a class="btn btn-primary" href="/posts/<%= post._id %>">Back</a>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <a class="btn btn-primary" href="/posts/<%= post._id %>" style="background-color: orange; border-color:orange;">뒤로</a>
+          <button type="submit" class="btn btn-primary" style="background-color: orange; border-color:orange;">확인</button>
         </div>
 
       </form>
