@@ -3,7 +3,8 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var app = express();
-
+const session = require('express-session');
+const flash = require('connect-flash');
 
 
 //DBconnect
@@ -23,10 +24,13 @@ app.use(express.static(__dirname+ '/public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(methodOverride('_method'));
+app.use(flash());
+app.use(session({secret:'Mysecret',resave:true,saveUninitialized:true}));
 
 //Routes
 app.use('/', require('./routes/home'));
 app.use('/posts', require('./routes/posts'));
+app.use('/users', require('./routes/users'));
 
 
 
