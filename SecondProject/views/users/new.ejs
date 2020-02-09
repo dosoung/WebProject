@@ -9,14 +9,17 @@
 </head>
 <body>
   <%- include('../partials/nav') %>
-  <div class ="first" style="background-image: url('/images/register.jpg'); height: 150px; width:1440px; " >
-    <h1 style ="text-align: center; padding-top: 50px; color:white; font-weight: 700; font-size:35pt;">회원가입</h1></br>
-  </div></br>
+
   <div class="container mb-3 ">
+        <div class ="first" style="text-align: center; margin-bottom: 10px;">
+          <h1 style ="font-weight: 700; font-size:35pt; color:rgba(255, 94, 0,0.9)">회원가입</h1>
+          <hr style="height:1" >
+          <small  class="form-text">저희 사이트를 이용하시려면 회원가입이 필요합니다.</small>
+          <small class ="form-text">이미 회원 이신가요? <a href="/login">로그인</a></small>
+        </div>
    
   <form action ='/users' method ='POST'>
       <fieldset>
-
 
         <div class = "information" style="width:300px; margin: 0 auto;">
           <div class="form-group">
@@ -72,10 +75,10 @@
           </div>
           <hr style="height:1">
 
-          <div class = "information" style="width:300px; margin: 0 auto;"></div>
+          <div class = "information" style="width:300px; margin: 0 auto;"> 
             <p style="text-align: center;">
               <small>*필수항목</small>
-                <small id="email" class="form-text text-muted">우리는 절대로 이메일을 타인에게 알려주지 않습니다..</small>
+                <small id="email" class="form-text text-muted">우리는 절대로 회원정보를 타인에게 알려주지 않습니다..</small>
             </p>
             <% if(errors.unhandled){ %> <!-- 4 -->
               <div class="alert alert-danger">

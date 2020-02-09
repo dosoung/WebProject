@@ -1,7 +1,8 @@
 const User = require('../model/User');
 const express = require('express');
-
 const router = express.Router();
+const util = require('../util');
+
 
 //New
 router.get('/new', (req,res) => {
@@ -19,7 +20,7 @@ router.post('/' ,(req,res) => {
     if(err) {
       req.body.phone = req.body.phone2;
       req.flash('user',req.body );
-      req.flash('errors',parseError(err));
+      req.flash('errors',util.parseError(err));
       return res.redirect('/users/new');
     }
     res.redirect('/');
@@ -27,11 +28,8 @@ router.post('/' ,(req,res) => {
 });
 
 //Show
-router.get(':username', (req,res) => {
-  User.findOne({username:req.params.username}, (err,user) => {
-    if(err) return res.json(err);
-    res.render('users/show',{user:user});
-  });
+router.get('/show', (req,res) => {
+  res.render('users/show');
 });
 
 //edit
@@ -65,7 +63,7 @@ router.put('/:username', (req,res) => {
     user.save((err,user) => {
       if(err) {
         req.flash('user', req.body);
-        req.flash('errors', parseError(err));
+        req.flash('errors', util.parseError(err));
         return res.redirect('/users/' + req.params.username +'/edit');
       }
       res.redirect('/users/' + user.username);
@@ -84,21 +82,3 @@ router.delete('/:username' , (req,res) => {
 
 module.exports = router;
 
-
-function parseError(errors){
-  console.log("errors: ", errors)
-  var parsed = {};
-  if(errors.name == 'ValidationError'){
-    for(var name in errors.errors){
-      var validationError = errors.errors[name];
-      parsed[name] = { message:validationError.message };
-    }
-  }
-  else if(errors.code == '11000' && errors.errmsg.indexOf('username') > 0) {
-    parsed.username = { message:'이미 등록된 아이디 입니다.' };
-  }
-  else {
-    parsed.unhandled = JSON.stringify(errors);
-  }
-  return parsed;
-}

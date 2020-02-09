@@ -5,6 +5,8 @@ var methodOverride = require('method-override');
 var app = express();
 const session = require('express-session');
 const flash = require('connect-flash');
+var passport = require('./config/passport'); //1
+
 
 
 //DBconnect
@@ -26,6 +28,17 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(methodOverride('_method'));
 app.use(flash());
 app.use(session({secret:'Mysecret',resave:true,saveUninitialized:true}));
+
+//Passport.
+app.use(passport.initialize());  //passport  초기화
+app.use(passport.session());       //passport를 session과 연결
+
+//Custom Middlewares
+app.use(function(req,res,next) {
+    res.locals.isAuthenticated = req.isAuthenticated(); //isAuthenticated는 passport에서 제공하는 함수로 로그인이 되어있는지 아닌지 true,false반환
+    res.locals.currentUser = req.user; //Currentuser는 현재 로그인된 user의 정보를 불러온다.
+    next();
+})
 
 //Routes
 app.use('/', require('./routes/home'));

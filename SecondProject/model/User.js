@@ -100,10 +100,11 @@ userSchema.pre('save' , function(next) {
   }
 });
 
-userSchema.methods.authenticate = (password) => {
+userSchema.methods.authenticate = function (password)  {
   var user = this;
-  return bcrypt.compareSync(password, user.password);
-}
+  return bcrypt.compareSync(password,user.password);
+};
+
 
 // model & export
 var User = mongoose.model('member',userSchema); //'member'가 collection이름 몽고는 알아서 s를 붙인다 schema에
