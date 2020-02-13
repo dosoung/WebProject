@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <%- include('../partials/nav') %>
+
+    <div class ="container mb-3">
+        <h2 class ="mb-3">요청 목록</h2>
+
+        <table class="board-table table table-sm border-bottom">
+            <thead>
+                    <tr class="table-primary">
+                        <th scope="row">병원이름</th>
+                        <th scope="row">토큰개수</th>
+                        <th scope="row">주소</th>
+                        <th scope="row" class="date">요청시간</th>
+                    </tr>           
+            </thead>
+
+            <tbody>
+                <% if(posts==null || posts.length ==0) { %>
+                    <tr>
+                        <td colspan=2>등록된 요청이 없습니다.</td>
+                    </tr>
+                <% } %>
+                <% posts.forEach(function(post) { %>
+                    <tr>
+                            <td>
+                              <a href="/<%= post._id %>"><div class="ellipsis"><%= post.title %></div></a>
+                            </td>
+                            <td>
+                                <div class="ellipsis"><%= post.body %></div>
+                              </td>
+                              <td>
+                                  <div class="ellipsis"><%= post.address %></div>
+                                </td>
+                            <td class="date">
+                              <span data-date=" <%= post.createDate %>" style="font-size:8pt;"></span> <!-- 1 -->
+                            </td>
+                          </tr>
+               <% }) %>
+            </tbody>
+        </table>
+        
+    </div>
+    
+</body>
+</html>

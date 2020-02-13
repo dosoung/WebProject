@@ -1,0 +1,47 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <%- include('../partials/nav') %>
+    <div class="container mb-3">
+
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb p-1 pl-2 pr-2">
+                <li class="breadcrumb-item"><a href="/">홈</a></li>
+                <li class="breadcrumb-item active" aria-current="page">요청하기</li>
+              </ol>
+            </nav>
+            <div class="write" style="width:400px; margin:0 auto;">
+            <form action="/request" method="post">
+              <div class="form-group">
+                <input type="text" id="title" name="title" class="form-control" placeholder="병원이름">
+              </div>
+              
+              <div class="form-group">
+                <input type="text" name="body"class="form-control" placeholder="필요 헌혈증 개수" >
+                  <span class="invalid-feedback"></span>
+              </div>
+              <div class="form-group">
+                  <input type="text" id="address" name="address" class="form-control" placeholder="받을 주소" >
+                    <span class="invalid-feedback"></span>
+                </div>
+      
+              <div>
+                <a class="btn btn-primary" href="/posts">뒤로</a>
+                <button type="submit" class="btn btnimary">완료</button>
+              </div>
+            </form>
+          </div>
+      
+          </div>
+    
+</body>
+</html>
