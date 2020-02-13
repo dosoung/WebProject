@@ -1,0 +1,37 @@
+<nav class="navbar navbar-expand-lg navbar-dark " style="margin-bottom:60px; height: 50px; background-color:rgba(255, 94, 0, 0.9); ">
+    <a class="navbar-brand" href="/" ><img class="logo" src="/images/Gyul2.png"alt="ggul" style="width:30px;margin-left:150px;"></a>
+    <button class="navbar-toggler"  type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarColor01">
+      <style>
+        .nav-link{margin-left:100px;font-size: 15pt; font-weight: 900; }
+        </style>
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/about" style="margin-left:150px;">소개 <span class="sr-only" >(current)</span></a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="#">제품<span class="sr-only" >(current)</span></a>
+          </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="/posts">질문 & 답변<span class="sr-only">(current)</span></a>
+        </li>
+        <% if(isAuthenticated) { %>
+          <li class ="nav-item active">
+            <a class ="nav-link" href="/users/show">마이페이지<span class="sr-only">(crrent)</span></a>
+          </li>
+          <li class ="nav-item active">
+            <a class ="nav-link" href="/logout">로그아웃<span class="sr-only">(current)</span></a></a>
+          </li>
+          <% } else { %>
+        <li class="nav-item active">
+          <a class="nav-link" href="/users/new">회원가입<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="/login">로그인<span class="sr-only">(current)</span></a>
+        </li>
+        <% } %>
+      </ul>
+    </div>
+  </nav>

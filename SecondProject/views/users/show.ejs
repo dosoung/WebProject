@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <%- include('../partials/head') %>
+  
+</head>
+<body>
+  <%- include('../partials/nav') %>
+
+  <div class="container mb-3 "> 
+    <form action ='/users/edit' method ='POST'>
+          <div class="form-group">
+            <h1>000님 안녕하세요. </h1>
+            <p>0000@example.com</p>
+            <p>010-0000-0000</p>
+            <small><a href="/order">구매내역</a></small>
+            <small style="padding-left:20px;"><a href="/history">장바구니</a></small>
+        </div>
+              <hr style="height:1" ></br>
+            <div class="form-group" >
+              <button type="submit" class="btn btn-primary">뒤로</button>
+              <button type="submit" class="btn btn-primary">수정</button>
+            </div>
+      </form>
+  </div> 
+</body>
+</html>
